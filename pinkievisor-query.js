@@ -8,7 +8,6 @@
 // @author      makise-homura
 // ==/UserScript==
 
-
 // I've just copied this part from andreymal's "tabun replies".
 // Have no idea what it does; I guess it injects the script contents into a page.
 // So we can actually keep variables inside it. It is significant for XHR callback.
@@ -31,23 +30,23 @@
   function inject_iframe(body)
   {
     var content = '<html><head><link rel="stylesheet" href="https://pinkievisor.info/pv_styles/main_pv.css"></head><body>' + body + '</body></html>';
-    
+
     // Somehow URI string don't like '#', but color and style works normally without that.
     return 'data:text/html;charset=utf-8,' + encodeURI(content.replace(/#/g,''));
   }
-  
+
   function create_pinkie_url(id)
   {
     if (id.includes('vote_total_comment_'))
       return 'https://pinkievisor.info/pv_actions/select_comment/?id='+id.replace('vote_total_comment_','')
-    
+
     else if (id.includes('pinkie_topic_'))
       return 'https://pinkievisor.info/pv_actions/select_topic/?id='+id.replace('pinkie_topic_','')
-    
+
     console.log('Something went wrong! Can\'t create pinkie URL from id ' + id);
     return '';
   }
-  
+
   function open_subwindow(event)
   {
     // May be customized? May be saved in the cookies?
@@ -55,7 +54,7 @@
     var h = 600;
     var closegap = 22;
     var safezone = 30;
-    
+
     var x = event.pageX;
     var y = event.pageY;
     if (x + w > window.innerWidth - safezone) x = window.innerWidth - w - safezone;
@@ -69,10 +68,10 @@
     closespan.style.border = '2px';
     closespan.style.borderStyle = 'double';
     closespan.style.backgroundColor = '#FFD0F0';
-		closespan.id = 'close_' + event.target.id;
+    closespan.id = 'close_' + event.target.id;
     closespan.onclick = close_subwindow;
     closespan.innerHTML = '&nbsp;&#10006;&nbsp;';
-    
+
     var pinkiediv = document.createElement('div');
     pinkiediv.style.left = x.toString() + 'px';
     pinkiediv.style.top = y.toString() + 'px';
@@ -93,16 +92,16 @@
     resiframe.style.height = '100%';
     resiframe.src = inject_iframe('<img src="https://images.wikia.nocookie.net/siegenax/ru/images/3/31/Pinkie_walk.gif">');
     pinkiediv.appendChild(resiframe);
-    
+
     var pinkiexhr = new XMLHttpRequest();
     pinkiexhr.open('GET', create_pinkie_url(event.target.id), true);
     pinkiexhr.onreadystatechange = function()
     {
       if(pinkiexhr.readyState === XMLHttpRequest.DONE)
       {
-				var subdiv = document.createElement('div');
+        var subdiv = document.createElement('div');
         subdiv.innerHTML = pinkiexhr.response;
-        
+
         // Fix links
         Array('img', 'link', 'script').forEach(function(elementtype)
         {
@@ -110,22 +109,22 @@
           {
             Array('src', 'href').forEach(function(attribute)
             {
-	            if(element.getAttribute(attribute) !== null && ! element.getAttribute(attribute).startsWith('http'))
-  	          {
-    	          element.setAttribute(attribute, 'https://pinkievisor.info/' + element.getAttribute(attribute));
+              if(element.getAttribute(attribute) !== null && ! element.getAttribute(attribute).startsWith('http'))
+              {
+                element.setAttribute(attribute, 'https://pinkievisor.info/' + element.getAttribute(attribute));
               }
             });
           });
         });
-	      
+
         // Remove unneeded header (if it exists)
         var headers = subdiv.getElementsByTagName('h4');
         if (headers.length > 0) headers[0].remove();
-        
+
         resiframe.src = inject_iframe(subdiv.innerHTML);
       }
     };
-		pinkiexhr.send();
+    pinkiexhr.send();
   }
 
   function alter_block(block)
@@ -136,19 +135,19 @@
       block.onclick = open_subwindow;
       block.style.cursor = 'pointer';
     }
-    
+
     // A post
     else if (block.tagName == 'DIV' && typeof(block.children[0]) !== 'undefined' && block.children[0].id.substr(0,17) == "vote_total_topic_")
     {
-			var addspan = document.createElement('span');
+      var addspan = document.createElement('span');
       addspan.innerHTML = '<img id="' + block.children[0].id.replace('vote_total_', 'pinkie_') + '" src="https://files.everypony.ru/smiles/38/7c/4b5d41.png" width="20px" style="vertical-align: middle">';
       addspan.onclick = open_subwindow;
       addspan.style.cursor = 'pointer';
       block.appendChild(addspan);
     }
   }
-  
-	var count_blocks = document.getElementsByClassName('vote-count');
+
+  var count_blocks = document.getElementsByClassName('vote-count');
   for (let count_block of count_blocks) alter_block(count_block);
 
 });
