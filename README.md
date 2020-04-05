@@ -1,7 +1,7 @@
 # pinkievisor-query
 An userscript for Greasemonkey to enable pinkievisor popups on Tabun
 
-Could be used to ease getting post and comment stats from [https://pinkievisor.info](Pinkievisor) for [https://tabun.everypony.ru](Tabun) posts and comments.
+Could be used to ease getting post and comment stats from [Pinkievisor](https://pinkievisor.info) for [Tabun](https://tabun.everypony.ru) posts and comments.
 
 Once script is installed, you may:
 * Click a number between 'vote up' and 'vote down' arrows for a comment, to get pinkievisor stats for this comment;
