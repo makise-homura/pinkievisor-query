@@ -83,38 +83,32 @@
     resiframe.src = inject_iframe('<img src="https://images.wikia.nocookie.net/siegenax/ru/images/3/31/Pinkie_walk.gif">');
     pinkiediv.appendChild(resiframe);
 
-    var pinkiexhr = new XMLHttpRequest();
-    pinkiexhr.open('GET', create_pinkie_url(event.target.id), true);
-    pinkiexhr.onreadystatechange = function()
+    fetch(create_pinkie_url(event.target.id)).then(response => response.text()).then(function(text)
     {
-      if(pinkiexhr.readyState === XMLHttpRequest.DONE)
-      {
-        var subdiv = document.createElement('div');
-        subdiv.innerHTML = pinkiexhr.response;
+      var subdiv = document.createElement('div');
+      subdiv.innerHTML = text;
 
-        // Fix links
-        Array('img', 'link', 'script').forEach(function(elementtype)
+      // Fix links
+      Array('img', 'link', 'script').forEach(function(elementtype)
+      {
+        Array.from(subdiv.getElementsByTagName(elementtype)).forEach(function(element)
         {
-          Array.from(subdiv.getElementsByTagName(elementtype)).forEach(function(element)
+          Array('src', 'href').forEach(function(attribute)
           {
-            Array('src', 'href').forEach(function(attribute)
+            if(element.getAttribute(attribute) !== null && ! element.getAttribute(attribute).startsWith('http'))
             {
-              if(element.getAttribute(attribute) !== null && ! element.getAttribute(attribute).startsWith('http'))
-              {
-                element.setAttribute(attribute, 'https://pinkievisor.info/' + element.getAttribute(attribute));
-              }
-            });
+              element.setAttribute(attribute, 'https://pinkievisor.info/' + element.getAttribute(attribute));
+            }
           });
         });
+      });
 
-        // Remove unneeded header (if it exists)
-        var headers = subdiv.getElementsByTagName('h4');
-        if (headers.length > 0) headers[0].remove();
+      // Remove unneeded header (if it exists)
+      var headers = subdiv.getElementsByTagName('h4');
+      if (headers.length > 0) headers[0].remove();
 
-        resiframe.src = inject_iframe(subdiv.innerHTML);
-      }
-    };
-    pinkiexhr.send();
+      resiframe.src = inject_iframe(subdiv.innerHTML);
+    });
 
     // If we don't call it, the body onclick event will kill this window just immediately
     event.stopPropagation();
