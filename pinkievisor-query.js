@@ -126,6 +126,7 @@
     {
       block.onclick = open_subwindow;
       block.style.cursor = 'pointer';
+      block.title = 'Посмотреть статистику с пинкивизора';
     }
 
     // A post
@@ -135,6 +136,7 @@
       addspan.innerHTML = '<img id="' + block.children[0].id.replace('vote_total_', 'pinkie_') + '" src="https://files.everypony.ru/smiles/38/7c/4b5d41.png" width="20px" style="vertical-align: middle">';
       addspan.onclick = open_subwindow;
       addspan.style.cursor = 'pointer';
+      addspan.title = 'Посмотреть статистику с пинкивизора';
       block.appendChild(addspan);
     }
   }
