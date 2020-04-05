@@ -21,10 +21,12 @@
 })(document, function(window, document) {
   'use strict';
 
-  function close_subwindow(event)
+  function close_all_subwindows(event)
   {
-    var id = 'pinkievisor-subwindow-' + event.target.id.replace('close_','');
-    document.getElementById(id).remove();
+    Array.from(document.getElementsByClassName('pinkievisor-subwindow')).forEach(function(item)
+    {
+      item.remove();
+    });
   }
 
   function inject_iframe(body)
@@ -60,18 +62,6 @@
     if (x + w > window.innerWidth - safezone) x = window.innerWidth - w - safezone;
     if (x < safezone) x = safezone;
 
-    var closespan = document.createElement('span');
-    closespan.style.left = (w - closegap).toString() + 'px';
-    closespan.style.top = '2px';
-    closespan.style.cursor = 'pointer';
-    closespan.style.position = 'absolute';
-    closespan.style.border = '2px';
-    closespan.style.borderStyle = 'double';
-    closespan.style.backgroundColor = '#FFD0F0';
-    closespan.id = 'close_' + event.target.id;
-    closespan.onclick = close_subwindow;
-    closespan.innerHTML = '&nbsp;&#10006;&nbsp;';
-
     var pinkiediv = document.createElement('div');
     pinkiediv.style.left = x.toString() + 'px';
     pinkiediv.style.top = y.toString() + 'px';
@@ -81,10 +71,9 @@
     pinkiediv.style.borderStyle = 'solid';
     pinkiediv.style.borderColor = '#FF0099';
     pinkiediv.style.backgroundColor = '#FFFFFF';
+    pinkiediv.className = 'pinkievisor-subwindow';
     pinkiediv.id = 'pinkievisor-subwindow-' + event.target.id;
     pinkiediv.style.display = 'block';
-
-    pinkiediv.appendChild(closespan);
     document.body.appendChild(pinkiediv);
 
     var resiframe = document.createElement("iframe");
@@ -125,6 +114,9 @@
       }
     };
     pinkiexhr.send();
+
+    // If we don't call it, the body onclick event will kill this window just immediately
+    event.stopPropagation();
   }
 
   function alter_block(block)
@@ -150,4 +142,5 @@
   var count_blocks = document.getElementsByClassName('vote-count');
   for (let count_block of count_blocks) alter_block(count_block);
 
+  document.body.addEventListener('click', close_all_subwindows);
 });
