@@ -74,6 +74,7 @@
     pinkiediv.className = 'pinkievisor-subwindow';
     pinkiediv.id = 'pinkievisor-subwindow-' + event.target.id;
     pinkiediv.style.display = 'block';
+    pinkiediv.style.zIndex = '21'; // z-index of "Refresh thread" button is 20; we'll pop up on top of it
     document.body.appendChild(pinkiediv);
 
     var resiframe = document.createElement("iframe");
