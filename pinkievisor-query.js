@@ -3,7 +3,7 @@
 // @description Показывает пинкивизор при клике на статистику поста или коммента
 // @include     http://tabun.everypony.ru/*
 // @include     https://tabun.everypony.ru/*
-// @version     0.0.1
+// @version     0.0.2
 // @grant       none
 // @author      makise-homura
 // ==/UserScript==
