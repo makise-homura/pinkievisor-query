@@ -39,8 +39,8 @@
 
   function create_pinkie_url(id)
   {
-    if (id.includes('vote_total_comment_'))
-      return 'https://pinkievisor.info/pv_actions/select_comment/?id='+id.replace('vote_total_comment_','')
+    if (id.includes('pinkie_comment_'))
+      return 'https://pinkievisor.info/pv_actions/select_comment/?id='+id.replace('pinkie_comment_','')
 
     else if (id.includes('pinkie_topic_'))
       return 'https://pinkievisor.info/pv_actions/select_topic/?id='+id.replace('pinkie_topic_','')
@@ -114,30 +114,38 @@
     event.stopPropagation();
   }
 
-  function alter_block(block)
+  function create_element(type, margin, id)
   {
-    // A comment
-    if (block.tagName == 'SPAN' && block.id.substr(0,19) == 'vote_total_comment_')
-    {
-      block.onclick = open_subwindow;
-      block.style.cursor = 'pointer';
-      block.title = 'Посмотреть статистику с пинкивизора';
-    }
+    var created = document.createElement(type);
+    created.innerHTML = '<img id="' + id + '" src="https://files.everypony.ru/smiles/38/7c/4b5d41.png" width="20px" style="margin-top: ' + margin + '">';
+    created.onclick = open_subwindow;
+    created.style.cursor = 'pointer';
+    created.title = 'Посмотреть статистику с пинкивизора';
+    return created;
+  }
 
-    // A post
-    else if (block.tagName == 'DIV' && typeof(block.children[0]) !== 'undefined' && block.children[0].id.substr(0,17) == "vote_total_topic_")
+  function alter_comments(collection)
+  {
+    Array.from(collection).forEach(function(infoblock)
     {
-      var addspan = document.createElement('span');
-      addspan.innerHTML = '<img id="' + block.children[0].id.replace('vote_total_', 'pinkie_') + '" src="https://files.everypony.ru/smiles/38/7c/4b5d41.png" width="20px" style="vertical-align: middle">';
-      addspan.onclick = open_subwindow;
-      addspan.style.cursor = 'pointer';
-      addspan.title = 'Посмотреть статистику с пинкивизора';
-      block.appendChild(addspan);
+      // id of comment's clickable will be 'pinkie_comment_N'
+      var id = infoblock.getElementsByClassName('vote')[0].id.replace('vote_area_', 'pinkie_');
+      infoblock.appendChild(create_element('li', '-3px', id));
+    });
+  }
+
+  function alter_post(collection)
+  {
+    if (typeof(collection[0]) !== 'undefined')
+    {
+      // id of post's clickable will be 'pinkie_topic_N'
+      var id = collection[0].id.replace('vote_area_', 'pinkie_');
+      collection[0].appendChild(create_element('span', '3px', id));
     }
   }
 
-  var count_blocks = document.getElementsByClassName('vote-count');
-  for (let count_block of count_blocks) alter_block(count_block);
+  alter_post(document.getElementsByClassName('vote-topic'));
+  alter_comments(document.getElementsByClassName('comment-info'));
 
   document.body.addEventListener('click', close_all_subwindows);
 });
