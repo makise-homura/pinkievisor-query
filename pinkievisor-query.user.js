@@ -51,11 +51,18 @@
 
   function open_subwindow(event)
   {
-    // May be customized? May be saved in the cookies?
-    var w = 750;
-    var h = 600;
+    function get_local_storage(key, default_value)
+    {
+       var value = localStorage.getItem(key);
+       return (value === null) ? default_value : value;
+    }
+    
+    var w = Number(get_local_storage('pinkie_w', '750'));
+    var h = Number(get_local_storage('pinkie_h', '600'));
     var closegap = 22;
+    var minsize = 100;
     var safezone = 30;
+    var headersize = 16;
 
     var x = event.pageX;
     var y = event.pageY;
@@ -77,12 +84,102 @@
     pinkiediv.style.zIndex = '21'; // z-index of "Refresh thread" button is 20; we'll pop up on top of it
     document.body.appendChild(pinkiediv);
 
-    var resiframe = document.createElement("iframe");
+    var dragdiv = document.createElement('div');
+    dragdiv.style.width = '100%';
+    dragdiv.style.height = headersize + 'px';
+    dragdiv.style.cursor = 'move';
+    dragdiv.style.textAlign = 'center';
+    dragdiv.style.color = '#FFFFFF';
+    dragdiv.style.fontWeight = 'bold';
+    dragdiv.style.marginTop = '-2px';
+    dragdiv.style.paddingBottom = '2px';
+    dragdiv.style.backgroundColor = '#FF0099';
+    dragdiv.innerHTML = 'Статистика из Пинкивизора';
+    dragdiv.title = 'Перемещать окно';
+    pinkiediv.appendChild(dragdiv);
+
+    var drag_x;
+    var drag_y;
+    
+    function drag_execute(event)
+    {
+      pinkiediv.style.left = (event.clientX - drag_x) + 'px';
+      pinkiediv.style.top = (event.clientY - drag_y) + 'px';
+    }
+
+    function drag_stop()
+    {
+      window.removeEventListener('mousemove', drag_execute);
+      window.removeEventListener('mouseup', drag_stop);
+    }
+
+    function drag_start(event)
+    {
+      drag_x = event.clientX - pinkiediv.offsetLeft;
+      drag_y = event.clientY - pinkiediv.offsetTop;
+      window.addEventListener('mouseup', drag_stop);
+      window.addEventListener('mousemove', drag_execute);
+    }
+    
+    dragdiv.addEventListener('mousedown', drag_start);
+    
+    // To avoid closing window while dragging
+    dragdiv.addEventListener('click', function(event) {event.stopPropagation();});
+
+    var resiframe = document.createElement('iframe');
     resiframe.style.width = '100%';
-    resiframe.style.height = '100%';
+    resiframe.style.height = (h - headersize) + 'px';
     resiframe.src = inject_iframe('<img src="https://images.wikia.nocookie.net/siegenax/ru/images/3/31/Pinkie_walk.gif">');
     pinkiediv.appendChild(resiframe);
 
+    var resizediv = document.createElement('div');
+    resizediv.style.left = (w - 9) + 'px';
+    resizediv.style.top = (h - 9) + 'px';
+    resizediv.style.width = '12px';
+    resizediv.style.height = '11px';
+    resizediv.style.cursor = 'se-resize';
+    resizediv.style.position = 'absolute';
+    resizediv.innerHTML = '<span style="top: -6px; left: -3px; position: absolute; font-size: 16px; color: #FF0099;">&#x25E2;</span>';
+    resizediv.title = 'Изменять размер окна';
+    pinkiediv.appendChild(resizediv);
+
+    var resize_dw;
+    var resize_dh;
+        
+    function resize_execute(event)
+    {
+      w = event.clientX - resize_dw;
+      h = event.clientY - resize_dh;
+      if (w < minsize) w = minsize;
+      if (h < minsize) h = minsize;
+      pinkiediv.style.width = w + 'px';
+      pinkiediv.style.height = h + 'px';
+        resizediv.style.left = (w - 9) + 'px';
+        resizediv.style.top = (h - 9) + 'px';
+        resiframe.style.height = (h - headersize) + 'px';
+    }
+
+    function resize_stop()
+    {
+      window.removeEventListener('mousemove', resize_execute);
+      window.removeEventListener('mouseup', resize_stop);
+      localStorage.setItem('pinkie_w', w);
+      localStorage.setItem('pinkie_h', h);
+    }
+
+    function resize_start(event)
+    {
+      resize_dw = event.clientX - w;
+      resize_dh = event.clientY - h;
+      window.addEventListener('mouseup', resize_stop);
+      window.addEventListener('mousemove', resize_execute);
+    }
+    
+    resizediv.addEventListener('mousedown', resize_start);
+    
+    // To avoid closing window while resizing
+    resizediv.addEventListener('click', function(event) {event.stopPropagation();});
+    
     fetch(create_pinkie_url(event.target.id)).then(response => response.text()).then(function(text)
     {
       var subdiv = document.createElement('div');
