@@ -3,7 +3,7 @@
 // @description Показывает пинкивизор при клике на статистику поста или коммента
 // @include     http://tabun.everypony.ru/*
 // @include     https://tabun.everypony.ru/*
-// @version     0.0.2
+// @version     0.0.3
 // @grant       none
 // @author      makise-homura
 // ==/UserScript==
@@ -56,10 +56,9 @@
        var value = localStorage.getItem(key);
        return (value === null) ? default_value : value;
     }
-    
+
     var w = Number(get_local_storage('pinkie_w', '750'));
     var h = Number(get_local_storage('pinkie_h', '600'));
-    var closegap = 22;
     var minsize = 100;
     var safezone = 30;
     var headersize = 16;
@@ -100,7 +99,7 @@
 
     var drag_x;
     var drag_y;
-    
+
     function drag_execute(event)
     {
       pinkiediv.style.left = (event.clientX - drag_x) + 'px';
@@ -120,9 +119,9 @@
       window.addEventListener('mouseup', drag_stop);
       window.addEventListener('mousemove', drag_execute);
     }
-    
+
     dragdiv.addEventListener('mousedown', drag_start);
-    
+
     // To avoid closing window while dragging
     dragdiv.addEventListener('click', function(event) {event.stopPropagation();});
 
@@ -145,7 +144,7 @@
 
     var resize_dw;
     var resize_dh;
-        
+
     function resize_execute(event)
     {
       w = event.clientX - resize_dw;
@@ -174,12 +173,12 @@
       window.addEventListener('mouseup', resize_stop);
       window.addEventListener('mousemove', resize_execute);
     }
-    
+
     resizediv.addEventListener('mousedown', resize_start);
-    
+
     // To avoid closing window while resizing
     resizediv.addEventListener('click', function(event) {event.stopPropagation();});
-    
+
     fetch(create_pinkie_url(event.target.id)).then(response => response.text()).then(function(text)
     {
       var subdiv = document.createElement('div');
