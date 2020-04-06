@@ -259,5 +259,5 @@
   }
 
   var observer = new MutationObserver(alter_comments_callback);
-  observer.observe(document.getElementById('comments'), { attributes: false, childList: true, subtree: false });
+  observer.observe(document.getElementById('comments'), { attributes: false, childList: true, subtree: true });
 });
