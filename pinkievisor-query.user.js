@@ -118,6 +118,7 @@
   {
     var created = document.createElement(type);
     created.innerHTML = '<img id="' + id + '" src="https://files.everypony.ru/smiles/38/7c/4b5d41.png" width="20px" style="margin-top: ' + margin + '">';
+    created.className = 'pinkie-link';
     created.onclick = open_subwindow;
     created.style.cursor = 'pointer';
     created.title = 'Посмотреть статистику с пинкивизора';
@@ -128,9 +129,13 @@
   {
     Array.from(collection).forEach(function(infoblock)
     {
-      // id of comment's clickable will be 'pinkie_comment_N'
-      var id = infoblock.getElementsByClassName('vote')[0].id.replace('vote_area_', 'pinkie_');
-      infoblock.appendChild(create_element('li', '-3px', id));
+      // Don't add item to comment if already added
+      if (infoblock.getElementsByClassName('pinkie-link').length == 0)
+      {
+        // id of comment's clickable will be 'pinkie_comment_N'
+        var id = infoblock.getElementsByClassName('vote')[0].id.replace('vote_area_', 'pinkie_');
+        infoblock.appendChild(create_element('li', '-3px', id));
+      }
     });
   }
 
@@ -148,4 +153,15 @@
   alter_comments(document.getElementsByClassName('comment-info'));
 
   document.body.addEventListener('click', close_all_subwindows);
+
+  function alter_comments_callback(mutationsList, observer)
+  {
+    for (let mutation of mutationsList)
+    {
+      alter_comments(document.getElementsByClassName('comment-info'));
+    }
+  }
+
+  var observer = new MutationObserver(alter_comments_callback);
+  observer.observe(document.getElementById('comments'), { attributes: false, childList: true, subtree: false });
 });
