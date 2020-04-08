@@ -195,7 +195,7 @@
     // To avoid closing window while resizing
     resizediv.addEventListener('click', function(event) {event.stopPropagation();});
 
-    fetch(create_pinkie_url(event.target.id)).then(response => response.text()).then(function(text)
+    fetch(create_pinkie_url(event.target.id)).then(response =>  response.ok ? response.text() : Promise.reject(response)).then(function(text)
     {
       var subdiv = document.createElement('div');
       subdiv.innerHTML = text;
@@ -220,6 +220,10 @@
       if (headers.length > 0) headers[0].remove();
 
       resiframe.src = inject_iframe(subdiv.innerHTML);
+    }).catch((exc) =>
+    {
+      resiframe.src = inject_iframe('<img src="https://pinkievisor.info//smiles/4832.gif" width="70" height="70"> - Я просто не знаю, что пошло не так! Вот что мне говорят:<br>' + exc.message);
+      console.log(exc);
     });
 
     // If we don't call it, the body onclick event will kill this window just immediately
