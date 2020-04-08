@@ -37,16 +37,32 @@
     return 'data:text/html;charset=utf-8,' + encodeURI(content.replace(/#/g,''));
   }
 
+  function create_pinkie_id(stattype, id)
+  {
+    switch(stattype)
+    {
+      case 'comment':
+      case 'topic':
+        return id.replace('pinkie_' + stattype + '_','')
+      case 'blog':
+        return document.getElementsByClassName('topic-blog')[0].href; // Returns a link, not id, but it's ok for pinkievisor
+      case 'user':
+        return document.getElementsByClassName('user-login')[0].innerHTML;
+    }
+  }
+
   function create_pinkie_url(id)
   {
-    if (id.includes('pinkie_comment_'))
-      return 'https://pinkievisor.info/pv_actions/select_comment/?id='+id.replace('pinkie_comment_','')
+    var result = '';
 
-    else if (id.includes('pinkie_topic_'))
-      return 'https://pinkievisor.info/pv_actions/select_topic/?id='+id.replace('pinkie_topic_','')
+    Array('comment', 'topic', 'user', 'blog').forEach(function(stattype)
+    {
+        if (id.includes('pinkie_' + stattype + '_'))
+        result = 'https://pinkievisor.info/pv_actions/select_' + stattype + '/?id=' + create_pinkie_id(stattype, id);
+    });
 
-    console.log('Something went wrong! Can\'t create pinkie URL from id ' + id);
-    return '';
+    if (result == '') console.log('Something went wrong! Can\'t create pinkie URL from id ' + id + ' with stattype ' + stattype);
+    return result;
   }
 
   function open_subwindow(event)
@@ -235,17 +251,17 @@
     });
   }
 
-  function alter_post(collection)
+  function alter_header(collection)
   {
     if (typeof(collection[0]) !== 'undefined')
     {
-      // id of post's clickable will be 'pinkie_topic_N'
+      // id of post's clickable will be 'pinkie_{topic/blog/user}_N'
       var id = collection[0].id.replace('vote_area_', 'pinkie_');
       collection[0].appendChild(create_element('span', '3px', id));
     }
   }
 
-  alter_post(document.getElementsByClassName('vote-topic'));
+  alter_header(document.getElementsByClassName('vote-topic'));
   alter_comments(document.getElementsByClassName('comment-info'));
 
   document.body.addEventListener('click', close_all_subwindows);
