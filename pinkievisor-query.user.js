@@ -253,12 +253,12 @@
 
   function alter_header(collection)
   {
-    if (typeof(collection[0]) !== 'undefined')
+    Array.from(collection).forEach(function(infoblock)
     {
       // id of post's clickable will be 'pinkie_{topic/blog/user}_N'
-      var id = collection[0].id.replace('vote_area_', 'pinkie_');
-      collection[0].appendChild(create_element('span', '3px', id));
-    }
+      var id = infoblock.id.replace('vote_area_', 'pinkie_');
+      infoblock.appendChild(create_element('span', '3px', id));
+    });
   }
 
   alter_header(document.getElementsByClassName('vote-topic'));
