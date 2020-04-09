@@ -51,9 +51,6 @@
     }
   }
 
-  // As for Apr 2020, pinkievisor omits Access-Control-Allow-Origin for blog and user requests. Fix it.
-  const enable_cors_hack = true;
-
   function create_pinkie_url(id)
   {
     var result = '';
@@ -63,9 +60,6 @@
         if (id.includes('pinkie_' + stattype + '_'))
         result = 'https://pinkievisor.info/pv_actions/select_' + stattype + '/?id=' + create_pinkie_id(stattype, id);
     });
-
-    if (enable_cors_hack && (id.includes('pinkie_user_') || id.includes('pinkie_blog_')))
-        result = 'https://cors-anywhere.herokuapp.com/' + result;
 
     if (result == '') console.log('Something went wrong! Can\'t create pinkie URL from id ' + id + ' with stattype ' + stattype);
     return result;
