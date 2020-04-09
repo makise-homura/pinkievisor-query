@@ -285,5 +285,8 @@
   }
 
   var observer = new MutationObserver(alter_comments_callback);
-  observer.observe(document.getElementById('comments'), { attributes: false, childList: true, subtree: true });
+  if (document.getElementById('comments') !== null)
+  {
+    observer.observe(document.getElementById('comments'), { attributes: false, childList: true, subtree: true });
+  }
 });
