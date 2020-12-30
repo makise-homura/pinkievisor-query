@@ -205,7 +205,7 @@
       subdiv.innerHTML = text;
 
       // Fix links
-      Array('img', 'link', 'script').forEach(function(elementtype)
+      Array('a', 'img', 'link', 'script').forEach(function(elementtype)
       {
         Array.from(subdiv.getElementsByTagName(elementtype)).forEach(function(element)
         {
