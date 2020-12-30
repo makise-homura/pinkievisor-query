@@ -3,7 +3,7 @@
 // @description Показывает пинкивизор при клике на статистику поста или коммента
 // @include     http://tabun.everypony.ru/*
 // @include     https://tabun.everypony.ru/*
-// @version     0.0.7
+// @version     0.0.8
 // @grant       none
 // @author      makise-homura
 // ==/UserScript==
@@ -65,7 +65,7 @@
         }
     });
 
-    if (result == '') console.log('Something went wrong! Can\'t create pinkie URL from id ' + id + ' with stattype ' + stattype);
+    if (result == '') console.log('Something went wrong! Can\'t create pinkie URL from id ' + id);
     return result;
   }
 
