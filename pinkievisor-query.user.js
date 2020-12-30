@@ -209,7 +209,14 @@
           {
             if(element.getAttribute(attribute) !== null && ! element.getAttribute(attribute).startsWith('http'))
             {
-              element.setAttribute(attribute, 'https://pinkievisor.info/' + element.getAttribute(attribute));
+              if(element.getAttribute(attribute).startsWith('//'))
+              {
+                element.setAttribute(attribute, 'https:' + element.getAttribute(attribute));
+              }
+              else
+              {
+                element.setAttribute(attribute, 'https://pinkievisor.info/' + element.getAttribute(attribute));
+              }
             }
           });
         });
