@@ -31,7 +31,9 @@
 
   function inject_iframe(body)
   {
-    var content = '<html><head><link rel="stylesheet" href="https://pinkievisor.info/pv_styles/main_pv.css"></head><body>' + body + '</body></html>';
+    var content = '<html><head><link rel="stylesheet" href="https://pinkievisor.info/pv_styles/main_pv.css"></head><body>' +
+        '<div style="border-radius: 5px; border-style: solid; border-color: #ff0099; background-color: #ffffff; opacity: 0.9; padding: 10px; line-height: 1.9; margin: 5px;">' +
+        body + '</div></body></html>';
 
     // Somehow URI string don't like '#', but color and style works normally without that.
     return 'data:text/html;charset=utf-8,' + encodeURI(content.replace(/#/g,''));
@@ -58,7 +60,9 @@
     Array('comment', 'topic', 'user', 'blog').forEach(function(stattype)
     {
         if (id.includes('pinkie_' + stattype + '_'))
-        result = 'https://pinkievisor.info/pv_actions/select_' + stattype + '/?id=' + create_pinkie_id(stattype, id);
+        {
+          result = 'https://pinkievisor.info/pv_actions/select_' + stattype + '/?id=' + create_pinkie_id(stattype, id);
+        }
     });
 
     if (result == '') console.log('Something went wrong! Can\'t create pinkie URL from id ' + id + ' with stattype ' + stattype);
@@ -144,7 +148,7 @@
     var resiframe = document.createElement('iframe');
     resiframe.style.width = '100%';
     resiframe.style.height = (h - headersize) + 'px';
-    resiframe.src = inject_iframe('<img src="https://images.wikia.nocookie.net/siegenax/ru/images/3/31/Pinkie_walk.gif">');
+    resiframe.src = inject_iframe('<img style="margin-top: -35px" src="https://images.wikia.nocookie.net/siegenax/ru/images/3/31/Pinkie_walk.gif">');
     pinkiediv.appendChild(resiframe);
 
     var resizediv = document.createElement('div');
