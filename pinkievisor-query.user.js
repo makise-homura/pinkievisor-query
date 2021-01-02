@@ -3,7 +3,7 @@
 // @description Показывает пинкивизор при клике на статистику поста или коммента
 // @include     http://tabun.everypony.ru/*
 // @include     https://tabun.everypony.ru/*
-// @version     0.0.8
+// @version     0.0.9
 // @grant       none
 // @author      makise-homura
 // ==/UserScript==
@@ -140,6 +140,13 @@
       window.addEventListener('mousemove', drag_execute);
     }
 
+    // This should fix the Chrome iframe bug (https://stackoverflow.com/questions/29803676/iframe-not-loading-in-chrome-unless-window-is-resized)
+    function chrome_fix(iframe)
+    {
+      iframe.style.display = "none";
+      iframe.style.display = "block";
+    }
+
     dragdiv.addEventListener('mousedown', drag_start);
 
     // To avoid closing window while dragging
@@ -150,8 +157,7 @@
     resiframe.style.height = (h - headersize) + 'px';
     resiframe.src = inject_iframe('<img style="margin-top: -35px" src="https://images.wikia.nocookie.net/siegenax/ru/images/3/31/Pinkie_walk.gif">');
     pinkiediv.appendChild(resiframe);
-    resiframe.hide(0).show(0); // This should fix the Chrome iframe bug (https://stackoverflow.com/questions/29803676/iframe-not-loading-in-chrome-unless-window-is-resized)
-
+    chrome_fix(resiframe);
 
     var resizediv = document.createElement('div');
     resizediv.style.left = (w - 9) + 'px';
@@ -238,7 +244,7 @@
       resiframe.src = inject_iframe('<img src="https://pinkievisor.info//smiles/4832.gif" width="70" height="70"> - Я просто не знаю, что пошло не так! Вот что мне говорят:<br>' + exc.message);
       console.log(exc);
     });
-    resiframe.hide(0).show(0); // This should fix the Chrome iframe bug (https://stackoverflow.com/questions/29803676/iframe-not-loading-in-chrome-unless-window-is-resized)
+    chrome_fix(resiframe);
 
     // If we don't call it, the body onclick event will kill this window just immediately
     event.stopPropagation();
