@@ -3,7 +3,7 @@
 // @description Показывает пинкивизор при клике на статистику поста или коммента
 // @include     http://tabun.everypony.ru/*
 // @include     https://tabun.everypony.ru/*
-// @version     0.0.9
+// @version     0.0.10
 // @grant       none
 // @author      makise-homura
 // ==/UserScript==
@@ -143,8 +143,11 @@
     // This should fix the Chrome iframe bug (https://stackoverflow.com/questions/29803676/iframe-not-loading-in-chrome-unless-window-is-resized)
     function chrome_fix(iframe)
     {
-      iframe.style.display = "none";
-      iframe.style.display = "block";
+      iframe.onload = function()
+      {
+        this.style.display = "none";
+        this.style.display = "block";
+      }
     }
 
     dragdiv.addEventListener('mousedown', drag_start);
