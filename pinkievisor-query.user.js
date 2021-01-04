@@ -3,7 +3,7 @@
 // @description Показывает пинкивизор при клике на статистику поста или коммента
 // @include     http://tabun.everypony.ru/*
 // @include     https://tabun.everypony.ru/*
-// @version     0.0.10
+// @version     0.0.11
 // @grant       none
 // @author      makise-homura
 // ==/UserScript==
@@ -256,8 +256,10 @@
   function create_element(type, margin, id)
   {
     var created = document.createElement(type);
+    // We have to make identical ids for img and its container, because mouse click might land on any of them, and this id should go into create_pinkie_url()
     created.innerHTML = '<img id="' + id + '" src="https://files.everypony.ru/smiles/38/7c/4b5d41.png" width="20px" style="margin-top: ' + margin + '">';
     created.className = 'pinkie-link';
+    created.id = id;
     created.onclick = open_subwindow;
     created.style.cursor = 'pointer';
     created.title = 'Посмотреть статистику с пинкивизора';
