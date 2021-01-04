@@ -29,11 +29,11 @@
     });
   }
 
-  function inject_iframe(body)
+  function inject_iframe(body_obj)
   {
     var content = '<html><head><link rel="stylesheet" href="https://pinkievisor.info/pv_styles/main_pv.css"></head><body>' +
         '<div style="border-radius: 5px; border-style: solid; border-color: #ff0099; background-color: #ffffff; opacity: 0.9; padding: 10px; line-height: 1.9; margin: 5px;">' +
-        body + '</div></body></html>';
+        body_obj + '</div></body></html>';
 
     // Somehow URI string don't like '#', but color and style works normally without that.
     return 'data:text/html;charset=utf-8,' + encodeURI(content.replace(/#/g,''));
